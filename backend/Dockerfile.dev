@@ -1,0 +1,22 @@
+FROM golang:alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache git && \
+    adduser -D app && \
+    chown app:app /app
+
+USER app
+
+RUN go install github.com/air-verse/air@latest
+
+ENV API_ENV=development
+
+COPY --chown=app:app go.mod go.sum ./
+RUN go mod download
+
+COPY --chown=app:app . .
+
+EXPOSE 8081
+
+CMD ["sh", "/app/entrypoint.dev.sh"]

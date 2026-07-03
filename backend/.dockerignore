@@ -1,0 +1,8 @@
+.gocache
+logs
+tmp
+bin
+.env*
+.git
+.gitignore
+*.md

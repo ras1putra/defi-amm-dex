@@ -1,0 +1,23 @@
+{
+  "name": "defi-amm-dex",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "bun@1.2.0",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:dev": "hardhat run scripts/v2-deploy-dev.ts --network localhost",
+    "deploy:prod": "hardhat run scripts/v2-deploy-prod.ts --network remote",
+    "send-tokens:dev": "HARDHAT_NETWORK=localhost ts-node scripts/send-tokens-dev.ts"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "hardhat": "^2.22.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0"
+  }
+}

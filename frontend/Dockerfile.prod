@@ -1,0 +1,28 @@
+FROM oven/bun:alpine AS builder
+
+WORKDIR /app
+
+COPY --chown=bun:bun package.json bun.lock ./
+RUN bun install
+
+COPY --chown=bun:bun . .
+RUN bun run build
+
+FROM oven/bun:alpine AS runner
+
+WORKDIR /app
+
+ENV NEXT_PUBLIC_APP_MODE=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+COPY --from=builder --chown=bun:bun /app/.next/standalone ./
+COPY --from=builder --chown=bun:bun /app/.next/static ./.next/static
+COPY --from=builder --chown=bun:bun /app/public ./public
+
+USER bun
+
+EXPOSE 3000
+
+CMD ["bun", "server.js"]

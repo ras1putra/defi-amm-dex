@@ -1,0 +1,40 @@
+# General
+.env
+*.env
+!.env.example
+node_modules/
+.DS_Store
+
+# Backend
+backend/bin/
+backend/tmp/
+backend/*.exe
+backend/*.exe~
+backend/*.out
+backend/*.prof
+backend/coverage*.out
+backend/.gocache/
+backend/env/
+backend/logs/
+backend/.env
+backend/indexer
+backend/api
+
+# Contracts
+contracts/node_modules/
+contracts/artifacts/
+contracts/cache/
+contracts/typechain-types/
+contracts/.env
+contracts/deployed-dex-addresses.txt
+deployed-dex-addresses.txt
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/coverage/
+frontend/.env*
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
