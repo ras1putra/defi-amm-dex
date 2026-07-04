@@ -44,7 +44,7 @@ export function formatPrice(v: number): string {
     return "$" + v.toFixed(zeros + 4).replace(/0+$/, "");
   }
 
-  return "$0.0" + toSubscript(zeros) + digits;
+  return "$0.0" + "₍" + toSubscript(zeros - 1) + "₎" + digits;
 }
 
 export function formatETH(v: number): string {
@@ -67,7 +67,7 @@ export function formatETH(v: number): string {
     return v.toFixed(zeros + 4).replace(/0+$/, "") + " ETH";
   }
 
-  return "0.0" + toSubscript(zeros) + digits + " ETH";
+  return "0.0" + "₍" + toSubscript(zeros - 1) + "₎" + digits + " ETH";
 }
 
 export function formatTokenMetric(v: number, symbol0: string, symbol1: string): string {
