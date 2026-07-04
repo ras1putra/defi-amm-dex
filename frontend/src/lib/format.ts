@@ -28,16 +28,46 @@ export function formatPrice(v: number): string {
   if (v === 0) return "$0";
   if (v >= 1) return "$" + v.toFixed(2);
   if (v >= 0.01) return "$" + v.toFixed(4);
-  if (v >= 0.0001) return "$" + v.toFixed(6);
-  return "$" + v.toExponential(4);
+
+  const exp = v.toExponential();
+  const match = exp.match(/^([\d.]+)[eE]([-\d]+)$/);
+  if (!match) return "$" + v.toFixed(6);
+
+  const coef = parseFloat(match[1]);
+  const exponent = Math.abs(parseInt(match[2]));
+  const zeros = exponent - 1;
+
+  let digits = coef.toFixed(4).replace(/\.?0+$/, "");
+  digits = digits.replace(".", "");
+
+  if (zeros <= 4) {
+    return "$" + v.toFixed(zeros + 4).replace(/0+$/, "");
+  }
+
+  return "$0.0" + toSubscript(zeros) + digits;
 }
 
 export function formatETH(v: number): string {
   if (v === 0) return "0 ETH";
   if (v >= 1) return v.toFixed(4) + " ETH";
   if (v >= 0.001) return v.toFixed(6) + " ETH";
-  if (v >= 0.000001) return v.toFixed(8) + " ETH";
-  return v.toExponential(4) + " ETH";
+
+  const exp = v.toExponential();
+  const match = exp.match(/^([\d.]+)[eE]([-\d]+)$/);
+  if (!match) return v.toFixed(8) + " ETH";
+
+  const coef = parseFloat(match[1]);
+  const exponent = Math.abs(parseInt(match[2]));
+  const zeros = exponent - 1;
+
+  let digits = coef.toFixed(4).replace(/\.?0+$/, "");
+  digits = digits.replace(".", "");
+
+  if (zeros <= 4) {
+    return v.toFixed(zeros + 4).replace(/0+$/, "") + " ETH";
+  }
+
+  return "0.0" + toSubscript(zeros) + digits + " ETH";
 }
 
 export function formatTokenMetric(v: number, symbol0: string, symbol1: string): string {
