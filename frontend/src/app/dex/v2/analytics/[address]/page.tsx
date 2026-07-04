@@ -102,14 +102,6 @@ export default function TokenDetailPage() {
     return wethToken?.price_usd ?? 0;
   };
 
-  const safeToken = token || {};
-  const headerPriceUSD = activePool ? getPoolPriceUSD(activePool) : (safeToken.price_usd ?? 0);
-  const wethPriceUSD = getWETHPriceUSD();
-  const headerPriceETH = activePool && activePool.price > 0
-    ? (isWethMode ? (isBaseAsset(activePool.symbol0) && !isBaseAsset(activePool.symbol1) ? 1 / activePool.price : activePool.price) : headerPriceUSD / (wethPriceUSD || 1))
-    : (safeToken.price_eth ?? 0);
-  const headerPriceChange = activePool?.price_change_24h ?? (safeToken.price_change_24h ?? 0);
-
   if (tokensLoading) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] text-white font-syne">
@@ -136,6 +128,13 @@ export default function TokenDetailPage() {
       </div>
     );
   }
+
+  const headerPriceUSD = activePool ? getPoolPriceUSD(activePool) : (token.price_usd ?? 0);
+  const wethPriceUSD = getWETHPriceUSD();
+  const headerPriceETH = activePool && activePool.price > 0
+    ? (isWethMode ? (isBaseAsset(activePool.symbol0) && !isBaseAsset(activePool.symbol1) ? 1 / activePool.price : activePool.price) : headerPriceUSD / (wethPriceUSD || 1))
+    : (token.price_eth ?? 0);
+  const headerPriceChange = activePool?.price_change_24h ?? (token.price_change_24h ?? 0);
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white font-syne">
