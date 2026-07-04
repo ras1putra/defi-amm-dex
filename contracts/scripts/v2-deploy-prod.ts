@@ -46,21 +46,13 @@ async function main() {
   console.log("V2Router deployed at:", routerAddress);
 
   // Deploy V2MasterChef
-  console.log("\nDeploying V2MasterChef...");
+  const ownerAddress = CONTRACT_ADDRESSES.stakingOwner;
+  console.log("\nDeploying V2MasterChef with owner:", ownerAddress);
   const MasterChefFactory = await ethers.getContractFactory("V2MasterChef");
-  const masterChef = await MasterChefFactory.deploy(deployer.address);
+  const masterChef = await MasterChefFactory.deploy(ownerAddress);
   await masterChef.waitForDeployment();
   const masterChefAddress = await masterChef.getAddress();
   console.log("V2MasterChef deployed at:", masterChefAddress);
-
-  // Transfer ownership
-  const ownerAddress = CONTRACT_ADDRESSES.stakingOwner;
-  if (ownerAddress && ownerAddress !== deployer.address) {
-    console.log(`\nTransferring MasterChefV2 ownership to ${ownerAddress}...`);
-    const transferTx = await masterChef.transferOwnership(ownerAddress);
-    await transferTx.wait();
-    console.log("Ownership transferred");
-  }
 
   // Write deployed addresses
   const outputFile = CONTRACT_ADDRESSES.outputFile;
