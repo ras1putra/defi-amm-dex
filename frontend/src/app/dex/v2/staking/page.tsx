@@ -49,7 +49,7 @@ export default function StakingPage() {
         {isLoading ? (
           <Loading />
         ) : pools && pools.length > 0 ? (
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto justify-items-center">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl justify-items-start">
             {pools.map((pool) => (
               <StakePanel key={pool.address} pool={pool} refetchPools={refetchPools} />
             ))}
