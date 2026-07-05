@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useAccount, useReadContracts, useBalance } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ArrowDownUp, Wallet, ChevronDown, XCircle } from "lucide-react";
@@ -31,6 +31,9 @@ export default function SwapPanel() {
   const { openConnectModal } = useConnectModal();
   const { isLoading: configLoading, isError: configError, error: configErrorObj, refetch: refetchConfig } = useConfig();
   const { customTokens, importToken, removeToken } = useCustomTokensStore();
+
+  const config = useConfigStore((s) => s.config);
+  const wethAddress = config?.contract_weth?.toLowerCase();
 
   const {
     data: tokensList = [],
@@ -105,15 +108,17 @@ export default function SwapPanel() {
     setTokenIn, setTokenOut, setAmountIn, setSlippageBps,
   } = useSwapStore();
 
-  const balance = useMemo(() => {
-    if (!tokenIn) return 0n;
-    return balances.get(tokenIn.address.toLowerCase()) ?? 0n;
-  }, [tokenIn, balances]);
+  const getTokenBalance = useCallback((token: TokenOption | null): bigint => {
+    if (!token) return 0n;
+    const addr = token.address.toLowerCase();
+    if (addr === wethAddress) {
+      return balances.get(NATIVE_TOKEN.toLowerCase()) ?? 0n;
+    }
+    return balances.get(addr) ?? 0n;
+  }, [balances, wethAddress]);
 
-  const outBalance = useMemo(() => {
-    if (!tokenOut) return 0n;
-    return balances.get(tokenOut.address.toLowerCase()) ?? 0n;
-  }, [tokenOut, balances]);
+  const balance = useMemo(() => getTokenBalance(tokenIn), [tokenIn, getTokenBalance]);
+  const outBalance = useMemo(() => getTokenBalance(tokenOut), [tokenOut, getTokenBalance]);
 
   const parsedIn = tokenIn && amountIn ? parseAmount(amountIn, tokenIn.decimals) : 0n;
 
@@ -166,7 +171,7 @@ export default function SwapPanel() {
 
   const handleMaxClick = () => {
     if (!tokenIn) return;
-    const bal = balances.get(tokenIn.address.toLowerCase()) ?? 0n;
+    const bal = getTokenBalance(tokenIn);
     const maxAmount = poolReserveIn > 0n && poolReserveIn < bal ? poolReserveIn : bal;
     setAmountIn(formatUnits(maxAmount, tokenIn.decimals));
   };
